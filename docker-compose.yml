@@ -7,8 +7,6 @@ services:
     ports:
       - "3000:3000"
     container_name: web
-    # links:
-    #   - db
     environment:
       MYSQL_DATABASE: myapp
       MYSQL_USER: myapp
@@ -20,8 +18,19 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - web
+    volumes: 
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  cerbot:
+    image: cerbot/cerbot
+    volumes: 
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 # db:
 #   image: orchardup/mysql
 #   ports:
