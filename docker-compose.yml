@@ -1,15 +1,27 @@
-web:
-  build: .
-  command: node index.js
-  ports:
-    - "3000:3000"
-  # links:
-  #   - db
-  environment:
-    MYSQL_DATABASE: myapp
-    MYSQL_USER: myapp
-    MYSQL_PASSWORD: mysecurepass
-    MYSQL_HOST: db
+version: '3'
+
+services: 
+  web:
+    build: .
+    command: node index.js
+    ports:
+      - "3000:3000"
+    container_name: web
+    # links:
+    #   - db
+    environment:
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: myapp
+      MYSQL_PASSWORD: mysecurepass
+      MYSQL_HOST: db
+  nginx: 
+    build: ./nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+      - web
 # db:
 #   image: orchardup/mysql
 #   ports:
