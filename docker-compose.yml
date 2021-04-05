@@ -3,8 +3,8 @@ web:
   command: node index-db.js
   ports:
     - "3000:3000"
-  links:
-    - db
+  # links:
+  #   - db
   environment:
     MYSQL_DATABASE: myapp
     MYSQL_USER: myapp
